@@ -1,16 +1,62 @@
-# React + Vite
+# MindShare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A campus community for sharing ideas, finding fellow hackathon participants, and joining student or faculty projects. Built with React 19, Vite, and plain CSS.
 
-Currently, two official plugins are available:
+## Current build
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This checkout contains the first forest-and-lime redesign, with a responsive overview, idea feed, hackathon directory, opportunity directory, bookmarks, activity page, and explicitly labeled local admin preview.
 
-## React Compiler
+Working local flows:
+- Search and category filtering; idea sorting by upvotes or date.
+- Publish, edit, and delete your own ideas; upvote/downvote with undo.
+- Comments and replies, bookmarks across all three content types.
+- Event details, participant lists, join and leave.
+- Opportunity requests, withdrawal, and local admin review.
+- Local admin listing creation and closing/reopening listings.
+- Editable profile, light/dark themes, keyboard-accessible dialogs, reduced-motion support.
+- Browser persistence under `mindshare.workspace.v1`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**This is currently a local workspace, not a connected multi-user service.** Sample listings and participants are illustrative. The admin preview is not an authorization boundary. Do not deploy it as a production community with real personal data yet.
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```sh
+npm install
+npm run dev
+npm run build
+node --test tests/store.test.js
+```
+
+Production output goes to `dist`. Hash-based routes support direct links on static hosts without rewrite rules. Google Fonts supplies Manrope and DM Sans; system sans-serif remains the fallback.
+
+## Code structure
+
+- `src/App.jsx`: app shell, routing, overview, directories, activity, local administration.
+- `src/features/Detail.jsx`: idea/event/opportunity details and discussion.
+- `src/features/Forms.jsx`: accessible dialogs and publishing/profile/request forms.
+- `src/components/CommunityCards.jsx`: reusable cards, avatars, tags, bookmarks.
+- `src/components/Icon.jsx`: inline SVG icons.
+- `src/lib/store.js`: initial content, pure reducer, persistence loading, date helpers.
+- `src/App.css`: palette, components, responsive layouts, reduced motion.
+- `backend/schema.sql`: proposed Supabase schema and access policies; not applied.
+- `tests/store.test.js`: meaningful state-transition regression checks.
+
+The older page/components remain in the repository but are not used by the new App entry point.
+
+## Supabase integration — pending
+
+Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. They are not consumed by the current local workspace. Never use a service-role or secret key in browser code.
+
+Before switching to shared data:
+1. Inspect the target project and its existing tables. Review `backend/schema.sql`; it creates prefixed `ms_` tables without dropping existing tables.
+2. Apply the schema through an authorized database session. This has not been done by this build.
+3. Connect Supabase Auth and the database client, then replace local mutations with authenticated requests and error handling. Do not upload the current local state wholesale.
+4. After creating the owner's account/profile, grant admin membership through an owner-controlled database operation. Users must never grant themselves admin rights.
+5. Verify policies using anonymous, student A, student B, and admin sessions. Test ownership, private requests/bookmarks, closed-event joins, and unauthorized admin writes.
+6. Configure email confirmation and allowed redirect URLs, then test account creation, sign-in/out, session restoration, and production deployment.
+
+RLS design reference: https://supabase.com/docs/guides/database/postgres/row-level-security
+
+## Scope for later iterations
+
+Real accounts, shared data, protected administration, notifications, team formation, listing editing, and deployment verification remain to be completed. Campus event participation is separate from official event registration.
