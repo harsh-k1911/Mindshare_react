@@ -3,15 +3,16 @@ import Icon from './components/Icon';
 import { Avatar, EventCard, IdeaCard, OpportunityCard } from './components/CommunityCards';
 import { ApplicationForm, IdeaForm, ListingForm, ProfileForm } from './features/Forms';
 import Detail from './features/Detail';
+import CampusOverview from './features/CampusOverview';
 import { categories, dateLabel, isClosed, readState, reducer, STORAGE_KEY } from './lib/store';
-const navigation = [['overview', 'grid', 'Overview'], ['ideas', 'bulb', 'Ideas'], ['hackathons', 'trophy', 'Hackathons'], ['opportunities', 'briefcase', 'Opportunities'], ['saved', 'bookmark', 'Saved'], ['activity', 'activity', 'My activity']];
+const navigation = [['overview', 'grid', 'Campus'], ['ideas', 'bulb', 'Ideas'], ['hackathons', 'trophy', 'Hackathons'], ['opportunities', 'briefcase', 'Opportunities'], ['saved', 'bookmark', 'Saved'], ['activity', 'activity', 'My activity']];
 const copy = {
-  ideas: ['A little spark. A bigger possibility.', 'Share what’s on your mind. Find the people who see its potential.'],
-  hackathons: ['Find your next challenge.', 'Discover an event. Find your people. Build something together.'],
-  opportunities: ['Your skills. Something meaningful.', 'Find campus projects that could use a person just like you.'],
-  saved: ['Good finds, kept close.', 'Your bookmarked ideas, events, and opportunities, all in one place.'],
-  activity: ['Your corner of the community.', 'Keep up with your ideas, participation, and collaboration requests.'],
-  admin: ['Make room for what’s next.', 'Publish campus listings and review collaboration requests.']
+  ideas: ['Ideas & conversations', 'Share an idea, ask a question, or help someone think it through.'],
+  hackathons: ['Hackathons & competitions', 'Discover an event. Find your people. Build something together.'],
+  opportunities: ['Campus opportunities', 'Find campus projects that could use a person just like you.'],
+  saved: ['Saved for later', 'Your bookmarked ideas, events, and opportunities, all in one place.'],
+  activity: ['Your activity', 'Keep up with your ideas, participation, and collaboration requests.'],
+  admin: ['Manage campus listings', 'Publish campus listings and review collaboration requests.']
 };
 function SectionHeading({
   eyebrow,
@@ -100,24 +101,11 @@ export default function App() {
       e.preventDefault();
       document.getElementById("main").focus();
     }}>Skip to content</a>
-<aside className="sidebar"><a className="brand" href="#/overview"><span className="brand-mark"><Icon name="leaf" size={25} /></span>mindshare<span className="brand-dot">.</span></a>
-<div className="campus-label"><span className="campus-icon"><Icon name="users" size={18} /></span>
-<div><strong>Your campus collective</strong>
-<span>A little more connected</span></div></div>
-<span className="nav-label">DISCOVER & CONNECT</span>
-<nav aria-label="Main navigation">{navigation.map(([key, icon, label]) => <a key={key} href={`#/${key}`} className={page === key ? 'nav-item active' : 'nav-item'} aria-current={page === key ? 'page' : undefined}><Icon name={icon} size={19} />{label}{key === 'saved' && state.saved.length > 0 && <span className="nav-count">{state.saved.length}</span>}</a>)}</nav>
-<div className="sidebar-bottom"><div className="sidebar-note"><span className="little-star">✳</span>
-<h3>Good things start<br />with a “what if?”</h3>
-<p>Your next idea could find<br />its people here.</p>
-<button className="text-button" onClick={() => setModal({
-            type: 'idea'
-          })}>Share a spark <Icon name="arrow" size={16} /></button></div>
-<button className="profile-button" onClick={() => setModal({
-          type: 'profile'
-        })}><Avatar name={state.profile.name} />
-<span><strong>{state.profile.name}</strong>
-<small>{state.profile.department || 'Make yourself at home'}</small></span>
-<Icon name="settings" size={17} /></button></div></aside>
+<header className="campus-header">
+  <a className="brand" href="#/overview"><span className="brand-mark"><Icon name="leaf" size={23}/></span>mindshare<span className="brand-dot">.</span></a>
+  <nav aria-label="Main navigation">{navigation.map(([key, icon, label]) => <a key={key} href={`#/${key}`} className={page === key ? 'nav-item active' : 'nav-item'} aria-current={page === key ? 'page' : undefined}><Icon name={icon} size={18}/>{label}{key === 'saved' && state.saved.length > 0 && <span className="nav-count">{state.saved.length}</span>}</a>)}</nav>
+  <button className="account-button" onClick={() => setModal({type:'profile'})} aria-label="Edit profile"><Avatar name={state.profile.name}/></button>
+</header>
 <div className="main-shell"><header className="topbar"><div className="breadcrumb">Your campus <Icon name="chevron" size={13} />
 <strong>{navigation.find(([key]) => key === page)?.[2] || 'Admin workspace'}</strong></div>
 <div className="topbar-actions"><label className="search-box"><Icon name="search" size={17} />
@@ -128,45 +116,7 @@ export default function App() {
 <button className="header-avatar" onClick={() => setModal({
             type: 'profile'
           })} aria-label="Edit profile"><Avatar name={state.profile.name} /></button></div></header>
-<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />Local workspace <span className="notice-divider">/</span> Sample listings · saved on this browser<a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <><div className="welcome"><div><span className="eyebrow">A SPACE FOR YOUR NEXT CHAPTER</span>
-<h1>Big things start <span>right here.</span></h1>
-<p>A good idea. The right people. A little courage to begin.</p></div>
-<button className="button primary" onClick={() => setModal({
-              type: 'idea'
-            })}><Icon name="plus" size={18} />Share an idea</button></div><section className="hero-banner"><div className="hero-copy"><span className="hero-label"><i /> YOUR CAMPUS. YOUR POSSIBILITIES.</span>
-<h2>Find your people.<br />Build your <em>next thing.</em></h2>
-<p>Ideas worth exploring, challenges worth taking,<br className="desktop-break" /> and people who make it all a little more possible.</p>
-<a href="#/hackathons" className="button lime">Explore hackathons <Icon name="arrow" size={18} /></a></div>
-<div className="hero-art" aria-hidden="true"><div className="orbit orbit-one" />
-<div className="orbit orbit-two" />
-<div className="hero-spark">✳</div>
-<div className="floating-note note-one"><span className="note-icon"><Icon name="bulb" size={22} /></span>
-<div>A little spark.<strong>A whole lot of possibility.</strong></div></div>
-<div className="floating-note note-two"><div className="tiny-avatars"><span>RK</span>
-<span>AM</span>
-<span>YOU</span></div>
-<strong>Better, together.</strong>
-<span>Your next team is closer than you think.</span></div>
-<div className="scribble">good things grow here ↗</div>
-<span className="art-plus plus-one">+</span>
-<span className="art-plus plus-two">+</span></div></section><div className="quick-links"><a href="#/ideas"><span className="quick-icon green"><Icon name="bulb" /></span>
-<div><strong>Ideas with potential</strong>
-<span>Give a thought room to grow</span></div>
-<Icon name="arrow" size={18} /></a>
-<a href="#/hackathons"><span className="quick-icon lilac"><Icon name="trophy" /></span>
-<div><strong>A challenge awaits</strong>
-<span>Find your next hackathon</span></div>
-<Icon name="arrow" size={18} /></a>
-<a href="#/opportunities"><span className="quick-icon sand"><Icon name="briefcase" /></span>
-<div><strong>Make your skills matter</strong>
-<span>Join something in the making</span></div>
-<Icon name="arrow" size={18} /></a></div><SectionHeading eyebrow="GET OUT THERE" title="Your next “let’s do this.”" href="#/hackathons" label="All hackathons" /><div className="card-grid events-grid">{state.events.filter(e => !isClosed(e)).slice(0, 3).map(event => <EventCard key={event.id} event={event} {...cardProps} />)}</div><div className="overview-lower"><section><SectionHeading eyebrow="FROM THE COMMUNITY" title="A few fresh perspectives." href="#/ideas" />
-<div className="ideas-grid">{[...state.ideas].sort((a, b) => b.upvotes - a.upvotes).slice(0, 2).map(idea => <IdeaCard key={idea.id} idea={idea} {...cardProps} />)}</div></section>
-<aside className="growth-panel"><span className="eyebrow">A PLACE TO CONTRIBUTE</span>
-<Icon name="leaf" size={42} />
-<h2>You don’t have to<br />start from scratch.</h2>
-<p>Someone on campus is already building something that could use your skills.</p>
-<a href="#/opportunities" className="text-button">Find an opportunity <Icon name="arrow" size={17} /></a></aside></div></> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'YOUR CAMPUS COLLECTIVE'}</span>
+<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />Local workspace <span className="notice-divider">/</span> Sample listings · saved on this browser<a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <CampusOverview state={state} dispatch={dispatch} onCompose={() => setModal({type:'idea'})}/> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'CAMPUS COMMUNITY'}</span>
 <div><h1>{copy[page]?.[0]}</h1>{page === 'ideas' && <button className="button primary" onClick={() => setModal({
                 type: 'idea'
               })}><Icon name="plus" size={18} />Share an idea</button>}{page === 'admin' && <button className="button primary" onClick={() => setModal({
@@ -182,7 +132,7 @@ export default function App() {
                 kind: 'opportunities',
                 item
               }))].map(renderCard)}</div>{ideas.length + events.length + opportunities.length === 0 && <Empty />}</>}{['ideas', 'hackathons', 'opportunities'].includes(page) && <><div className="feed-toolbar"><div className="chips" aria-label="Filter by topic">{(page === 'ideas' ? categories : page === 'hackathons' ? ['All', 'Open', 'On campus', 'Online', 'Hybrid'] : ['All', 'Open', 'React', 'Python', 'Design']).map(tag => <button className={`chip ${category === tag ? 'active' : ''}`} aria-pressed={category === tag} key={tag} onClick={() => setCategory(tag)}>{tag}</button>)}</div>{page === 'ideas' && <label className="sort-label">Sort by<select value={sort} onChange={e => setSort(e.target.value)}><option>Trending</option>
-<option>Newest</option></select></label>}</div><div className="results-count">{filteredCount} {page === 'ideas' ? 'ideas to explore' : page === 'hackathons' ? 'events to discover' : 'ways to contribute'}</div><div className={`card-grid ${page === 'ideas' ? 'ideas-grid' : ''}`}>{page === 'ideas' ? ideas.map(idea => <IdeaCard key={idea.id} idea={idea} {...cardProps} />) : page === 'hackathons' ? events.map(event => <EventCard key={event.id} event={event} {...cardProps} />) : opportunities.map(item => <OpportunityCard key={item.id} item={item} {...cardProps} />)}</div>{filteredCount === 0 && <Empty />}</>}{page === 'saved' && (allSaved.length ? <div className="card-grid">{allSaved.map(renderCard)}</div> : <Empty title={query ? 'No saved posts match your search.' : 'Keep a little inspiration for later.'} text="Use the bookmark on any idea, hackathon, or opportunity to find it here." action={<a href="#/ideas" className="button primary">Explore ideas <Icon name="arrow" size={16} /></a>} />)}{page === 'activity' && <><div className="activity-profile panel"><Avatar name={state.profile.name} />
+<option>Newest</option></select></label>}</div><div className="results-count">{filteredCount} {page === 'ideas' ? 'ideas to explore' : page === 'hackathons' ? 'events to discover' : 'ways to contribute'}</div><div className={`card-grid ${page === 'ideas' ? 'discussion-feed' : page === 'hackathons' ? 'event-directory' : 'role-directory'}`}>{page === 'ideas' ? ideas.map(idea => <IdeaCard key={idea.id} idea={idea} {...cardProps} />) : page === 'hackathons' ? events.map(event => <EventCard key={event.id} event={event} {...cardProps} />) : opportunities.map(item => <OpportunityCard key={item.id} item={item} {...cardProps} />)}</div>{filteredCount === 0 && <Empty />}</>}{page === 'saved' && (allSaved.length ? <div className="card-grid">{allSaved.map(renderCard)}</div> : <Empty title={query ? 'No saved posts match your search.' : 'Keep a little inspiration for later.'} text="Use the bookmark on any idea, hackathon, or opportunity to find it here." action={<a href="#/ideas" className="button primary">Explore ideas <Icon name="arrow" size={16} /></a>} />)}{page === 'activity' && <><div className="activity-profile panel"><Avatar name={state.profile.name} />
 <div><h2>{state.profile.name}</h2>
 <p>{[state.profile.department, state.profile.year].filter(Boolean).join(' · ') || 'Add your name, skills, and a little about yourself.'}</p></div>
 <button className="button secondary" onClick={() => setModal({
@@ -226,6 +176,6 @@ export default function App() {
                     payload: 'Accepted'
                   })}>Accept</button></div>}</div>)}</div> : <Empty title="All caught up." text="New collaboration requests will appear here." />}</>}</>}</main>
 <footer className="site-footer"><span>mindshare<span className="brand-dot">.</span></span>
-<p>A little more connected. A lot more possible.</p>
-<span>Made for the in-between ideas.</span></footer></div>{modal?.type === 'idea' && <IdeaForm {...cardProps} idea={modal.idea} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'profile' && <ProfileForm {...cardProps} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'apply' && <ApplicationForm {...cardProps} item={modal.item} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'listing' && <ListingForm dispatch={dispatch} onClose={() => setModal(null)} notify={notify} />}{toast && <div className="toast" role="status"><Icon name="check" size={18} />{toast}</div>}</div>;
+<p>Ideas, events, and people from your campus.</p>
+<span>Share something worth starting.</span></footer></div>{modal?.type === 'idea' && <IdeaForm {...cardProps} idea={modal.idea} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'profile' && <ProfileForm {...cardProps} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'apply' && <ApplicationForm {...cardProps} item={modal.item} onClose={() => setModal(null)} notify={notify} />}{modal?.type === 'listing' && <ListingForm dispatch={dispatch} onClose={() => setModal(null)} notify={notify} />}{toast && <div className="toast" role="status"><Icon name="check" size={18} />{toast}</div>}</div>;
 }
