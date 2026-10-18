@@ -4,7 +4,7 @@ A campus community for sharing ideas, finding fellow hackathon participants, and
 
 ## Current build
 
-This checkout contains the forest-and-lime campus layout, with a top navigation, a discussion feed, deadlines and open roles in a right column, a student doodle, and a responsive overview, idea feed, hackathon directory, opportunity directory, bookmarks, activity page, and explicitly labeled local admin preview.
+This checkout contains the forest-and-lime campus layout, with sidebar navigation, readable card grids, a student doodle in the welcome panel, and a responsive overview, idea feed, hackathon directory, opportunity directory, bookmarks, activity page, and explicitly labeled local admin preview.
 
 Working local flows:
 - Search and category filtering; idea sorting by upvotes or date.
@@ -32,7 +32,7 @@ Production output goes to `dist`. Hash-based routes support direct links on stat
 ## Code structure
 
 - `src/App.jsx`: app shell, routing, overview, directories, activity, local administration.
-- `src/features/CampusOverview.jsx`: campus introduction, sortable discussion feed, upcoming events, and open roles.
+- `src/features/CampusOverview.jsx`: illustrated welcome panel, upcoming event cards, sortable idea cards, and opportunities.
 - `src/assets/student-doodle.md`: generated illustration provenance and prompt.
 - `src/features/Detail.jsx`: idea/event/opportunity details and discussion.
 - `src/features/Forms.jsx`: accessible dialogs and publishing/profile/request forms.

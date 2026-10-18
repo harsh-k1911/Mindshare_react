@@ -5,7 +5,7 @@ import { ApplicationForm, IdeaForm, ListingForm, ProfileForm } from './features/
 import Detail from './features/Detail';
 import CampusOverview from './features/CampusOverview';
 import { categories, dateLabel, isClosed, readState, reducer, STORAGE_KEY } from './lib/store';
-const navigation = [['overview', 'grid', 'Campus'], ['ideas', 'bulb', 'Ideas'], ['hackathons', 'trophy', 'Hackathons'], ['opportunities', 'briefcase', 'Opportunities'], ['saved', 'bookmark', 'Saved'], ['activity', 'activity', 'My activity']];
+const navigation = [['overview', 'grid', 'Overview'], ['ideas', 'bulb', 'Ideas'], ['hackathons', 'trophy', 'Hackathons'], ['opportunities', 'briefcase', 'Opportunities'], ['saved', 'bookmark', 'Saved'], ['activity', 'activity', 'My activity']];
 const copy = {
   ideas: ['Ideas & conversations', 'Share an idea, ask a question, or help someone think it through.'],
   hackathons: ['Hackathons & competitions', 'Discover an event. Find your people. Build something together.'],
@@ -101,11 +101,13 @@ export default function App() {
       e.preventDefault();
       document.getElementById("main").focus();
     }}>Skip to content</a>
-<header className="campus-header">
-  <a className="brand" href="#/overview"><span className="brand-mark"><Icon name="leaf" size={23}/></span>mindshare<span className="brand-dot">.</span></a>
-  <nav aria-label="Main navigation">{navigation.map(([key, icon, label]) => <a key={key} href={`#/${key}`} className={page === key ? 'nav-item active' : 'nav-item'} aria-current={page === key ? 'page' : undefined}><Icon name={icon} size={18}/>{label}{key === 'saved' && state.saved.length > 0 && <span className="nav-count">{state.saved.length}</span>}</a>)}</nav>
-  <button className="account-button" onClick={() => setModal({type:'profile'})} aria-label="Edit profile"><Avatar name={state.profile.name}/></button>
-</header>
+<aside className="sidebar">
+  <a className="brand" href="#/overview"><span className="brand-mark"><Icon name="leaf" size={25}/></span>mindshare<span className="brand-dot">.</span></a>
+  <div className="campus-label"><span className="campus-icon"><Icon name="users" size={18}/></span><div><strong>Your campus</strong><span>Ideas, events & people</span></div></div>
+  <span className="nav-label">EXPLORE</span>
+  <nav aria-label="Main navigation">{navigation.map(([key, icon, label]) => <a key={key} href={`#/${key}`} className={page === key ? 'nav-item active' : 'nav-item'} aria-current={page === key ? 'page' : undefined}><Icon name={icon} size={19}/>{label}{key === 'saved' && state.saved.length > 0 && <span className="nav-count">{state.saved.length}</span>}</a>)}</nav>
+  <div className="sidebar-bottom"><button className="button primary sidebar-compose" onClick={() => setModal({type:'idea'})}><Icon name="plus" size={18}/>Share an idea</button><button className="profile-button" onClick={() => setModal({type:'profile'})}><Avatar name={state.profile.name}/><span><strong>{state.profile.name}</strong><small>{state.profile.department || 'Edit your profile'}</small></span><Icon name="settings" size={17}/></button></div>
+</aside>
 <div className="main-shell"><header className="topbar"><div className="breadcrumb">Your campus <Icon name="chevron" size={13} />
 <strong>{navigation.find(([key]) => key === page)?.[2] || 'Admin workspace'}</strong></div>
 <div className="topbar-actions"><label className="search-box"><Icon name="search" size={17} />
@@ -132,7 +134,7 @@ export default function App() {
                 kind: 'opportunities',
                 item
               }))].map(renderCard)}</div>{ideas.length + events.length + opportunities.length === 0 && <Empty />}</>}{['ideas', 'hackathons', 'opportunities'].includes(page) && <><div className="feed-toolbar"><div className="chips" aria-label="Filter by topic">{(page === 'ideas' ? categories : page === 'hackathons' ? ['All', 'Open', 'On campus', 'Online', 'Hybrid'] : ['All', 'Open', 'React', 'Python', 'Design']).map(tag => <button className={`chip ${category === tag ? 'active' : ''}`} aria-pressed={category === tag} key={tag} onClick={() => setCategory(tag)}>{tag}</button>)}</div>{page === 'ideas' && <label className="sort-label">Sort by<select value={sort} onChange={e => setSort(e.target.value)}><option>Trending</option>
-<option>Newest</option></select></label>}</div><div className="results-count">{filteredCount} {page === 'ideas' ? 'ideas to explore' : page === 'hackathons' ? 'events to discover' : 'ways to contribute'}</div><div className={`card-grid ${page === 'ideas' ? 'discussion-feed' : page === 'hackathons' ? 'event-directory' : 'role-directory'}`}>{page === 'ideas' ? ideas.map(idea => <IdeaCard key={idea.id} idea={idea} {...cardProps} />) : page === 'hackathons' ? events.map(event => <EventCard key={event.id} event={event} {...cardProps} />) : opportunities.map(item => <OpportunityCard key={item.id} item={item} {...cardProps} />)}</div>{filteredCount === 0 && <Empty />}</>}{page === 'saved' && (allSaved.length ? <div className="card-grid">{allSaved.map(renderCard)}</div> : <Empty title={query ? 'No saved posts match your search.' : 'Keep a little inspiration for later.'} text="Use the bookmark on any idea, hackathon, or opportunity to find it here." action={<a href="#/ideas" className="button primary">Explore ideas <Icon name="arrow" size={16} /></a>} />)}{page === 'activity' && <><div className="activity-profile panel"><Avatar name={state.profile.name} />
+<option>Newest</option></select></label>}</div><div className="results-count">{filteredCount} {page === 'ideas' ? 'ideas to explore' : page === 'hackathons' ? 'events to discover' : 'ways to contribute'}</div><div className={`card-grid ${page === 'ideas' ? 'ideas-grid' : ''}`}>{page === 'ideas' ? ideas.map(idea => <IdeaCard key={idea.id} idea={idea} {...cardProps} />) : page === 'hackathons' ? events.map(event => <EventCard key={event.id} event={event} {...cardProps} />) : opportunities.map(item => <OpportunityCard key={item.id} item={item} {...cardProps} />)}</div>{filteredCount === 0 && <Empty />}</>}{page === 'saved' && (allSaved.length ? <div className="card-grid">{allSaved.map(renderCard)}</div> : <Empty title={query ? 'No saved posts match your search.' : 'Keep a little inspiration for later.'} text="Use the bookmark on any idea, hackathon, or opportunity to find it here." action={<a href="#/ideas" className="button primary">Explore ideas <Icon name="arrow" size={16} /></a>} />)}{page === 'activity' && <><div className="activity-profile panel"><Avatar name={state.profile.name} />
 <div><h2>{state.profile.name}</h2>
 <p>{[state.profile.department, state.profile.year].filter(Boolean).join(' · ') || 'Add your name, skills, and a little about yourself.'}</p></div>
 <button className="button secondary" onClick={() => setModal({
