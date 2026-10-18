@@ -41,3 +41,9 @@ npm run build
 ```
 
 Client-side configuration tests do not verify credentials, database access policies, or live authentication. These need a configured project and controlled test accounts.
+
+## Email delivery limitation
+
+The first manual signup attempt returned `email rate limit exceeded`. Supabase's built-in email provider currently allows only two messages per hour per project and restricts recipients to organization members. Check for an earlier confirmation email; otherwise retry after the sending quota recovers. This is a server limit, not resolved by changing client validation. Public student registration requires a custom SMTP provider with a verified sender. Configure SMTP credentials only in Supabase, never in Vite environment variables. Keep email confirmation enabled.
+
+References: https://supabase.com/docs/guides/auth/rate-limits and https://supabase.com/docs/guides/auth/auth-smtp

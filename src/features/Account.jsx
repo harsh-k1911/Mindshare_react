@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Icon from '../components/Icon';
 import studentDoodle from '../assets/student-doodle.png';
 import { getSupabaseClient, supabaseConfig } from '../lib/supabase/client';
-import { submitAccountAction, validateAccountForm } from '../lib/supabase/auth';
+import { accountErrorMessage, submitAccountAction, validateAccountForm } from '../lib/supabase/auth';
 
 export default function Account({ session, loading, sessionError, recovery, onRecovered }) {
   const [choice,setChoice] = useState('signin');
@@ -26,7 +26,7 @@ export default function Account({ session, loading, sessionError, recovery, onRe
       if (mode === 'signup' && !data?.session) setMessage('Check your email for a confirmation link. Then return here to sign in.');
       if (mode === 'forgot') setMessage('If this email can receive a reset link, one has been sent. Check your inbox and spam folder.');
       if (mode === 'reset') { onRecovered(); setMessage('Password updated.'); }
-    } catch (failure) { setError(failure.message || 'We couldn’t complete that request. Please try again.'); }
+    } catch (failure) { setError(accountErrorMessage(failure)); }
     finally { setBusy(false); }
   }
   async function signOut() {

@@ -22,3 +22,10 @@ export async function submitAccountAction(client, mode, values, location) {
   if (result.error) throw result.error;
   return result.data;
 }
+
+export function accountErrorMessage(error) {
+  if (error?.code === 'over_email_send_rate_limit' || /email rate limit exceeded/i.test(error?.message || '')) {
+    return 'Email sending is temporarily limited. Check your inbox and spam folder for an earlier confirmation email. If none arrived, wait before trying again. Repeated attempts will not bypass the limit.';
+  }
+  return error?.message || 'We couldn’t complete that request. Please try again.';
+}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { accountRedirect, validateAccountForm, submitAccountAction } from '../src/lib/supabase/auth.js';
+import { accountErrorMessage, accountRedirect, validateAccountForm, submitAccountAction } from '../src/lib/supabase/auth.js';
 const location = {origin:'http://127.0.0.1:5173',pathname:'/',search:'?redirect=https://other.example'};
 const values = {name:' Student ',email:' student@example.com ',password:' secure password ',confirm:' secure password '};
 test('callbacks stay on the app origin and discard incoming query parameters', () => {
@@ -30,4 +30,10 @@ test('recovery uses its own callback and updates only the password', async () =>
 test('server failures are surfaced instead of reporting success', async () => {
   const failure=new Error('Invalid credentials');
   await assert.rejects(submitAccountAction({auth:{signInWithPassword:async()=>({error:failure})}},'signin',values,location),failure);
+});
+
+test('email throttling explains the limitation without promising success or an exact reset time', () => {
+  assert.match(accountErrorMessage({code:'over_email_send_rate_limit'}), /temporarily limited/);
+  assert.match(accountErrorMessage({message:'email rate limit exceeded'}), /Check your inbox/);
+  assert.equal(accountErrorMessage({message:'Invalid credentials'}),'Invalid credentials');
 });
