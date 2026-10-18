@@ -47,6 +47,8 @@ The older page/components remain in the repository but are not used by the new A
 
 ## Supabase integration — pending
 
+The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Authentication screens and shared-data operations are not connected yet. See `backend/SETUP.md` for checkpoints.
+
 Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. They are not consumed by the current local workspace. Never use a service-role or secret key in browser code.
 
 Before switching to shared data:
