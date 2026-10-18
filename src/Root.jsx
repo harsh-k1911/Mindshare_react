@@ -42,5 +42,5 @@ export default function Root() {
     const url = new URL(location.href); url.searchParams.delete('flow'); url.searchParams.delete('code');
     history.replaceState(null,'',url);
   }
-  return accountPage ? <Account session={session} loading={loading} sessionError={sessionError} recovery={recovery} onRecovered={recovered}/> : <App accountSession={session}/>;
+  return accountPage ? <Account key={session?.user.id || 'signed-out'} session={session} loading={loading} sessionError={sessionError} recovery={recovery} onRecovered={recovered}/> : <App accountSession={session}/>;
 }

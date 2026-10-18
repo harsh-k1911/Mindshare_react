@@ -47,3 +47,11 @@ Client-side configuration tests do not verify credentials, database access polic
 The first manual signup attempt returned `email rate limit exceeded`. Supabase's built-in email provider currently allows only two messages per hour per project and restricts recipients to organization members. Check for an earlier confirmation email; otherwise retry after the sending quota recovers. This is a server limit, not resolved by changing client validation. Public student registration requires a custom SMTP provider with a verified sender. Configure SMTP credentials only in Supabase, never in Vite environment variables. Keep email confirmation enabled.
 
 References: https://supabase.com/docs/guides/auth/rate-limits and https://supabase.com/docs/guides/auth/auth-smtp
+
+## 5. Account profile — 19 October 2026
+
+The user confirmed successful account creation and sign-in on 18 October. The account screen now loads and updates `ms_profiles` using the authenticated user's ID. Editable fields are name, department, year/role, skills, and bio. No local sample data is uploaded. A failed read offers a retry; a failed save preserves entered values. Switching accounts remounts the form, and old load responses are ignored after unmount.
+
+Profile fields are readable by other authenticated members under the existing database policy. Identity and admin membership are not editable through this form. Service tests check field filtering, validation, user-scoped queries, and error handling; actual authorization remains enforced by database RLS.
+
+Manual verification pending: open My account, save your profile, reload, and confirm the fields persist. Shared posts, listings, and the overview's preview identity remain local until the next integration step.
