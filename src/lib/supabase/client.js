@@ -6,8 +6,8 @@ export const supabaseConfig = validateSupabaseConfig({
   publishableKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim(),
 });
 
-// Lazy initialization avoids starting an auth session in the local preview.
-// Authentication screens will explicitly request this shared client next.
+// Root restores the account session through this shared client.
+// Local preview content remains in a separate storage namespace.
 let client;
 export function getSupabaseClient() {
   if (supabaseConfig.status !== 'ready') {

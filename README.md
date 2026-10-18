@@ -46,9 +46,9 @@ Production output goes to `dist`. Hash-based routes support direct links on stat
 
 The older page/components remain in the repository but are not used by the new App entry point.
 
-## Supabase integration — pending
+## Supabase integration — in progress
 
-The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Authentication screens and shared-data operations are not connected yet. See `backend/SETUP.md` for checkpoints.
+The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Account screens are connected to Supabase Auth; live email/session testing is pending. Shared-data operations are not connected yet. See `backend/SETUP.md` for checkpoints.
 
 Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. They are not consumed by the current local workspace. Never use a service-role or secret key in browser code.
 
@@ -64,4 +64,4 @@ RLS design reference: https://supabase.com/docs/guides/database/postgres/row-lev
 
 ## Scope for later iterations
 
-Real accounts, shared data, protected administration, notifications, team formation, listing editing, and deployment verification remain to be completed. Campus event participation is separate from official event registration.
+Live account verification, shared data, protected administration, notifications, team formation, listing editing, and deployment verification remain to be completed. Campus event participation is separate from official event registration.

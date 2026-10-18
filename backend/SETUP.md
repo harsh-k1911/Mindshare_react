@@ -25,9 +25,13 @@ Executed `verify-rls.sql` in the database successfully. It checks owner versus o
 
 Grant the first real administrator explicitly after their account and profile exist. Browser data has not been uploaded. Live account flows and API integration still need testing.
 
-## 4. Authentication (next implementation step)
+## 4. Authentication — implementation complete, live verification pending
 
-Add sign-up, sign-in, sign-out, email confirmation, password recovery, and session restoration. Configure the exact development and deployed callback URLs in Supabase before testing confirmation/recovery flows. Keep account sessions separate from `mindshare.workspace.v1`; signing into an account must not upload or inherit another user's local data.
+Sign-up, sign-in, device sign-out, confirmation messaging, password recovery, and session restoration are implemented at `#/account`. Account sessions use `mindshare.auth.v1`, separate from `mindshare.workspace.v1`. Signing in does not upload local preview data.
+
+The Supabase redirect allowlist now includes `http://127.0.0.1:5173/**` for development only. The local confirmation callback is `http://127.0.0.1:5173/#/account`; recovery uses `http://127.0.0.1:5173/?flow=recovery#/account`. Open email links in the same browser that requested them (PKCE). Production callbacks and the production Site URL still need configuration once the deployment URL is confirmed.
+
+Verify with an owner-controlled account: create account, confirm email, sign in, reload, sign out, request recovery, and set a new password. The user must enter their own credentials. Automated service tests use mocks and do not prove delivery or live authentication. Shared database reads/writes are the next implementation step.
 
 ## Verification
 

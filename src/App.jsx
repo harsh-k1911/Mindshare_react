@@ -31,7 +31,7 @@ function Empty({
 <h2>{title}</h2>
 <p>{text}</p>{action}</div>;
 }
-export default function App() {
+export default function App({ accountSession }) {
   const [state, dispatch] = useReducer(reducer, undefined, readState);
   const [route, setRoute] = useState(() => location.hash.slice(2) || 'overview');
   const [query, setQuery] = useState('');
@@ -118,7 +118,7 @@ export default function App() {
 <button className="header-avatar" onClick={() => setModal({
             type: 'profile'
           })} aria-label="Edit profile"><Avatar name={state.profile.name} /></button></div></header>
-<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />Local workspace <span className="notice-divider">/</span> Sample listings · saved on this browser<a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <CampusOverview state={state} dispatch={dispatch} onCompose={() => setModal({type:'idea'})}/> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'CAMPUS COMMUNITY'}</span>
+<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />Local workspace <span className="notice-divider">/</span> Sample listings · saved on this browser<a className="account-access" href="#/account">{accountSession ? "My account" : "Sign in"}</a><a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <CampusOverview state={state} dispatch={dispatch} onCompose={() => setModal({type:'idea'})}/> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'CAMPUS COMMUNITY'}</span>
 <div><h1>{copy[page]?.[0]}</h1>{page === 'ideas' && <button className="button primary" onClick={() => setModal({
                 type: 'idea'
               })}><Icon name="plus" size={18} />Share an idea</button>}{page === 'admin' && <button className="button primary" onClick={() => setModal({
