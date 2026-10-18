@@ -2203,3 +2203,12 @@ form>.button {
 .account-profile>p { font-size:14px; line-height:1.7; margin-bottom:20px; }
 .account-profile fieldset { border:0; padding:0; margin:0; min-width:0; display:grid; gap:17px; }
 .account-profile textarea { width:100%; padding:12px; font:inherit; font-size:16px; resize:vertical; }
+
+.shared-idea-form { display:grid; gap:18px; margin-top:20px; }
+.shared-idea-form fieldset { border:0; padding:0; min-width:0; display:grid; gap:18px; }
+.shared-idea-form label { display:grid; gap:8px; font-size:15px; }
+.shared-idea-form textarea { width:100%; resize:vertical; }
+.shared-idea { padding:24px; min-width:0; }
+.shared-idea h2 { font-size:22px; margin:16px 0; overflow-wrap:anywhere; }
+.shared-idea-body { white-space:pre-wrap; overflow-wrap:anywhere; font-size:16px; line-height:1.7; margin-bottom:20px; }
+.shared-idea-footer { display:flex; justify-content:space-between; margin-top:20px; color:var(--muted); font-size:14px; }

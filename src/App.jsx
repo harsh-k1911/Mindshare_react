@@ -3,6 +3,7 @@ import Icon from './components/Icon';
 import { Avatar, EventCard, IdeaCard, OpportunityCard } from './components/CommunityCards';
 import { ApplicationForm, IdeaForm, ListingForm, ProfileForm } from './features/Forms';
 import Detail from './features/Detail';
+import SharedIdeas from './features/SharedIdeas';
 import CampusOverview from './features/CampusOverview';
 import { categories, dateLabel, isClosed, readState, reducer, STORAGE_KEY } from './lib/store';
 const navigation = [['overview', 'grid', 'Overview'], ['ideas', 'bulb', 'Ideas'], ['hackathons', 'trophy', 'Hackathons'], ['opportunities', 'briefcase', 'Opportunities'], ['saved', 'bookmark', 'Saved'], ['activity', 'activity', 'My activity']];
@@ -71,6 +72,10 @@ export default function App({ accountSession }) {
     return () => clearTimeout(timer);
   }, [toast]);
   const notify = text => setToast(text);
+  const composeIdea = () => {
+    if (accountSession) { location.hash = '/ideas'; setModal({type:'shared-idea'}); }
+    else setModal({type:'idea'});
+  };
   const cardProps = {
     state,
     dispatch
@@ -106,7 +111,7 @@ export default function App({ accountSession }) {
   <div className="campus-label"><span className="campus-icon"><Icon name="users" size={18}/></span><div><strong>Your campus</strong><span>Ideas, events & people</span></div></div>
   <span className="nav-label">EXPLORE</span>
   <nav aria-label="Main navigation">{navigation.map(([key, icon, label]) => <a key={key} href={`#/${key}`} className={page === key ? 'nav-item active' : 'nav-item'} aria-current={page === key ? 'page' : undefined}><Icon name={icon} size={19}/>{label}{key === 'saved' && state.saved.length > 0 && <span className="nav-count">{state.saved.length}</span>}</a>)}</nav>
-  <div className="sidebar-bottom"><button className="button primary sidebar-compose" onClick={() => setModal({type:'idea'})}><Icon name="plus" size={18}/>Share an idea</button><button className="profile-button" onClick={() => setModal({type:'profile'})}><Avatar name={state.profile.name}/><span><strong>{state.profile.name}</strong><small>{state.profile.department || 'Edit your profile'}</small></span><Icon name="settings" size={17}/></button></div>
+  <div className="sidebar-bottom"><button className="button primary sidebar-compose" onClick={composeIdea}><Icon name="plus" size={18}/>Share an idea</button><button className="profile-button" onClick={() => setModal({type:'profile'})}><Avatar name={state.profile.name}/><span><strong>{state.profile.name}</strong><small>{state.profile.department || 'Edit your profile'}</small></span><Icon name="settings" size={17}/></button></div>
 </aside>
 <div className="main-shell"><header className="topbar"><div className="breadcrumb">Your campus <Icon name="chevron" size={13} />
 <strong>{navigation.find(([key]) => key === page)?.[2] || 'Admin workspace'}</strong></div>
@@ -118,7 +123,7 @@ export default function App({ accountSession }) {
 <button className="header-avatar" onClick={() => setModal({
             type: 'profile'
           })} aria-label="Edit profile"><Avatar name={state.profile.name} /></button></div></header>
-<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />Local workspace <span className="notice-divider">/</span> Sample listings · saved on this browser<a className="account-access" href="#/account">{accountSession ? "My account" : "Sign in"}</a><a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <CampusOverview state={state} dispatch={dispatch} onCompose={() => setModal({type:'idea'})}/> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'CAMPUS COMMUNITY'}</span>
+<main id="main" tabIndex={-1} className="main-content"><div className="workspace-notice"><span className="live-dot" />{page === 'ideas' && accountSession ? 'Shared ideas' : 'Local workspace'} <span className="notice-divider">/</span> {page === 'ideas' && accountSession ? 'Saved to your community' : 'Sample listings · saved on this browser'}<a className="account-access" href="#/account">{accountSession ? "My account" : "Sign in"}</a><a href="#/admin">Admin preview <Icon name="arrow" size={13} /></a></div>{storageError && <p role="alert" className="error-message">Browser storage is unavailable. Changes will last only for this session.</p>}{page === 'ideas' && accountSession ? <SharedIdeas key={accountSession.user.id} userId={accountSession.user.id} query={query} ideaId={id} compose={modal?.type === 'shared-idea'} onComposeHandled={() => setModal(null)}/> : id && ['ideas', 'hackathons', 'opportunities'].includes(page) ? <Detail key={route} kind={page} item={(page === 'ideas' ? state.ideas : page === 'hackathons' ? state.events : state.opportunities).find(x => x.id === id)} {...cardProps} setModal={setModal} notify={notify} /> : !knownPage ? <Empty title="This page wandered off." text="Head back to your campus overview." action={<a className="button primary" href="#/overview">Back to overview</a>} /> : page === 'overview' && !query ? <CampusOverview state={state} dispatch={dispatch} onCompose={composeIdea}/> : <>{page !== 'overview' && <div className="page-heading"><span className="eyebrow">{page === 'admin' ? 'LOCAL ADMIN PREVIEW' : 'CAMPUS COMMUNITY'}</span>
 <div><h1>{copy[page]?.[0]}</h1>{page === 'ideas' && <button className="button primary" onClick={() => setModal({
                 type: 'idea'
               })}><Icon name="plus" size={18} />Share an idea</button>}{page === 'admin' && <button className="button primary" onClick={() => setModal({

@@ -55,3 +55,13 @@ The user confirmed successful account creation and sign-in on 18 October. The ac
 Profile fields are readable by other authenticated members under the existing database policy. Identity and admin membership are not editable through this form. Service tests check field filtering, validation, user-scoped queries, and error handling; actual authorization remains enforced by database RLS.
 
 Manual verification pending: open My account, save your profile, reload, and confirm the fields persist. Shared posts, listings, and the overview's preview identity remain local until the next integration step.
+
+## 6. Shared idea publishing — 19 October 2026
+
+The user confirmed saving their account profile. For signed-in members, `#/ideas` now loads the latest 100 posts from `ms_ideas`, including author names joined from `ms_profiles`. Members can publish and edit their own posts. Writes whitelist content fields; new authorship comes from the session, and updates constrain both the post ID and author ID. Existing RLS remains the authorization boundary.
+
+The editor waits for database confirmation before closing, preserves drafts on failure, and disables duplicate submission while saving. Feed reads ignore stale responses after a write or unmount. Search filters the loaded posts; Refresh ideas fetches the newest data. Live posts are not copied into browser preview storage. Overview, saved items, activity, listings, and local admin preview are still local; votes/comments/bookmarks on shared posts are not connected in this step.
+
+Manual verification: sign in, open Ideas, publish a post, reload, edit it, and reload again. A second signed-in member should see it after refreshing, without an Edit button. Mock service tests cover validation, identity filtering, query ownership, and failure handling; live multi-account verification remains pending.
+
+Live signed-in check: the shared feed successfully loads its empty state. The author join was made explicit (`ms_ideas_author_id_fkey`) after the live API reported ambiguous profile relationships. The publish dialog opens and native required-field validation blocks empty posts. No test posts were created; publish/edit persistence and second-member visibility still need verification.
