@@ -40,7 +40,8 @@ Production output goes to `dist`. Hash-based routes support direct links on stat
 - `src/components/Icon.jsx`: inline SVG icons.
 - `src/lib/store.js`: initial content, pure reducer, persistence loading, date helpers.
 - `src/App.css`: palette, components, responsive layouts, reduced motion.
-- `backend/schema.sql`: proposed Supabase schema and access policies; not applied.
+- `backend/schema.sql`: Supabase schema and access policies; applied on 18 October 2026.
+- `backend/verify-rls.sql`: rollback-only database authorization tests, verified against Supabase.
 - `tests/store.test.js`: meaningful state-transition regression checks.
 
 The older page/components remain in the repository but are not used by the new App entry point.
@@ -53,7 +54,7 @@ Public connection values can be kept in ignored `.env.local` using `.env.example
 
 Before switching to shared data:
 1. Inspect the target project and its existing tables. Review `backend/schema.sql`; it creates prefixed `ms_` tables without dropping existing tables.
-2. Apply the schema through an authorized database session. This has not been done by this build.
+2. Schema applied on 18 October 2026 after confirming the public schema was empty. The rollback-only authorization checks pass. Do not re-run the initial migration on this project.
 3. Connect Supabase Auth and the database client, then replace local mutations with authenticated requests and error handling. Do not upload the current local state wholesale.
 4. After creating the owner's account/profile, grant admin membership through an owner-controlled database operation. Users must never grant themselves admin rights.
 5. Verify policies using anonymous, student A, student B, and admin sessions. Test ownership, private requests/bookmarks, closed-event joins, and unauthorized admin writes.

@@ -1,8 +1,8 @@
--- MindShare: proposed Supabase migration. NOT applied automatically.
+-- MindShare: initial Supabase application schema.
 -- Inspect the target database before running. Uses ms_ prefixes to avoid collisions.
 -- Run once, transactionally, using a database owner in Supabase's SQL Editor.
--- These policies are a starting point; verify with two student accounts and an admin
--- before enabling the production client. No sample content is inserted here.
+-- No sample content or administrator membership is inserted here.
+-- See verify-rls.sql for rollback-only authorization checks.
 begin;
 create table public.ms_profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -132,6 +132,52 @@ create policy "Request an open opportunity" on public.ms_applications for insert
 create policy "Admins review requests" on public.ms_applications for update to authenticated using (public.ms_is_admin()) with check (public.ms_is_admin());
 create policy "Withdraw own request" on public.ms_applications for delete to authenticated using (user_id = (select auth.uid()));
 create policy "Private bookmarks" on public.ms_bookmarks for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+-- Limit updates to the fields that each feature actually edits. Identity and
+-- ownership columns cannot be reassigned through the public API.
+revoke update on public.ms_profiles, public.ms_ideas, public.ms_comments,
+ public.ms_votes, public.ms_listings, public.ms_applications, public.ms_bookmarks,
+ public.ms_participants from authenticated;
+grant update(name,department,year,skills,bio) on public.ms_profiles to authenticated;
+grant update(title,description,tags,stage) on public.ms_ideas to authenticated;
+grant update(body) on public.ms_comments to authenticated;
+grant update(value) on public.ms_votes to authenticated;
+grant update(title,description,owner_name,tags,event_date,deadline,format,eligibility,
+ registration_url,role,commitment,duration,slots,closed) on public.ms_listings to authenticated;
+grant update(status) on public.ms_applications to authenticated;
+
+-- Create a student profile when Auth creates an account; user metadata never
+-- controls admin membership. Existing Auth users receive a neutral profile.
+create function public.ms_create_profile() returns trigger language plpgsql security definer
+set search_path = '' as $$
+begin
+ insert into public.ms_profiles(id,name)
+ values(new.id, left(coalesce(nullif(trim(new.raw_user_meta_data->>'name'), ''), 'Student'),80));
+ return new;
+end;
+$$;
+revoke all on function public.ms_create_profile() from public, anon, authenticated;
+create trigger ms_auth_profile after insert on auth.users
+for each row execute function public.ms_create_profile();
+insert into public.ms_profiles(id,name)
+select id, left(coalesce(nullif(trim(raw_user_meta_data->>'name'), ''), 'Student'),80)
+from auth.users on conflict (id) do nothing;
+
+-- Discussions support comments and one level of replies, matching the UI.
+create function public.ms_check_reply() returns trigger language plpgsql
+set search_path = '' as $$
+begin
+ if new.parent_id is not null and exists (
+  select 1 from public.ms_comments where id = new.parent_id and parent_id is not null
+ ) then
+  raise exception 'Replies can only be added to a top-level comment';
+ end if;
+ return new;
+end;
+$$;
+revoke all on function public.ms_check_reply() from public, anon, authenticated;
+create trigger ms_comment_depth before insert on public.ms_comments
+for each row execute function public.ms_check_reply();
+
 create index ms_ideas_author on public.ms_ideas(author_id);
 create index ms_comments_idea on public.ms_comments(idea_id);
 create index ms_applications_user on public.ms_applications(user_id);

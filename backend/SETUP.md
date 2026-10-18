@@ -13,13 +13,17 @@ VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 
 Only publishable or legacy anon keys belong in Vite variables: every `VITE_` value is public in the browser bundle. Configuration checks catch common mistakes; the Supabase server, not client-side checks, validates keys and enforces authorization. Never add service-role keys, database passwords, or personal access tokens to this file or source code.
 
-## 2. Inspect the existing project (pending)
+## 2. Project inspection — completed 18 October 2026
 
-Before applying `schema.sql`, inspect existing tables, authentication settings, and database migrations. Confirm the `ms_` table names do not conflict. Do not reset or overwrite an existing project.
+The public schema was inspected through the Supabase SQL Editor and contained zero base tables. The dashboard reported a healthy project. No existing application tables were overwritten. Authentication settings still need review during the account-flow step.
 
-## 3. Database setup (pending)
+## 3. Database setup — completed 18 October 2026
 
-Review and apply the schema transaction in an authorized database session. Grant the initial administrator explicitly after their account and profile exist. Verify policies with separate student and admin accounts before connecting the production UI. Keep sample browser data separate from real records.
+Applied `schema.sql` to project `mocaaobiwsynqomjkiqm`. Nine application tables now use row-level security. Profile creation is triggered by Auth account creation; ownership and identity columns cannot be changed through client updates.
+
+Executed `verify-rls.sql` in the database successfully. It checks owner versus other-student edits, request/bookmark privacy, closed-event participation, vote impersonation, student versus admin listing management, and request review. Its fixture users and data were rolled back. No permanent admin membership was granted.
+
+Grant the first real administrator explicitly after their account and profile exist. Browser data has not been uploaded. Live account flows and API integration still need testing.
 
 ## 4. Authentication (next implementation step)
 
