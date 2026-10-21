@@ -2246,3 +2246,12 @@ form>.button {
 .participant-list { list-style:none; padding:0; margin:16px 0; }
 .participant-list li { display:grid; gap:5px; padding:12px 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
 .participant-list span { color:var(--muted); font-size:14px; }
+
+.shared-applications { margin-top:18px; font-size:16px; line-height:1.7; }
+.shared-applications h3 { font-size:18px; }
+.shared-applications form,.shared-applications label { display:grid; gap:12px; }
+.shared-applications textarea { width:100%; padding:12px; font:inherit; resize:vertical; }
+.application-entry { border-top:1px solid var(--line); margin-top:18px; padding-top:16px; overflow-wrap:anywhere; }
+.application-entry p { white-space:pre-wrap; }
+.application-review { margin-top:24px; }
+.application-entry .row-actions { display:flex; flex-wrap:wrap; gap:8px; }
