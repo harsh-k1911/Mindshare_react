@@ -109,3 +109,11 @@ The user explicitly approved their existing verified account as the first admini
 Verification: 52 automated tests, targeted lint, and production build pass. Live creation/edit/close/reopen persistence still needs user verification with real listing content. Participation, applications, listing bookmarks, and overview/activity integration are the following steps.
 
 Live role verification completed: the same signed-in account changed from the access-required screen to Create listing after the approved grant and permission refresh. Both event and opportunity forms open with their appropriate fields; empty submission is blocked. The development server was restarted for verification. No real listings were published during UI checks.
+
+## 11. Shared hackathon participation — 22 October 2026
+
+Signed-in hackathon cards now expand a campus participant list with names, departments, years, and skills. Joining and leaving use `ms_participants` with the session user ID. Conflict-ignore inserts prevent duplicate participation without requesting update permissions. Deletes constrain both the event and user. Existing RLS enforces open hackathons and deadlines for joins, and allows students to leave their own participation after closing. No migration is needed.
+
+Lists load on first expansion with ordered pagination and refresh after every write, including uncertain failures. Stale reads are ignored, duplicate clicks are locked, and failed reads offer refresh. Joining is explicitly separate from official event registration. Emails are not fetched or displayed.
+
+Verification: 58 automated tests, targeted lint, and production build pass. The live admin page has no shared listings yet, so live join/reload/leave and second-account visibility remain pending. Publish a real open hackathon, join it, reload and expand participants, then leave and verify removal. Opportunity applications remain the next integration step.

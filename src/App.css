@@ -2238,3 +2238,11 @@ form>.button {
 .shared-listing-form fieldset { border:0; padding:0; min-width:0; display:grid; gap:16px; }
 .shared-listing-form label { display:grid; gap:8px; font-size:15px; }
 .shared-listing-form textarea { width:100%; resize:vertical; }
+
+.participation-section { margin-top:22px; padding-top:16px; border-top:1px solid var(--line); }
+.shared-participants { margin-top:18px; }
+.shared-participants h3 { font-size:18px; }
+.shared-participants>p { margin:12px 0; font-size:14px; line-height:1.7; }
+.participant-list { list-style:none; padding:0; margin:16px 0; }
+.participant-list li { display:grid; gap:5px; padding:12px 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+.participant-list span { color:var(--muted); font-size:14px; }

@@ -16,7 +16,7 @@ Working local flows:
 - Editable profile, light/dark themes, keyboard-accessible dialogs, reduced-motion support.
 - Browser persistence under `mindshare.workspace.v1`.
 
-**This is currently a local workspace, not a connected multi-user service.** Sample listings and participants are illustrative. The admin preview is not an authorization boundary. Do not deploy it as a production community with real personal data yet.
+**Shared features are being connected incrementally.** Signed-in accounts use Supabase for profiles, ideas, listings, and hackathon participation. Overview and activity still show local preview content. Sample listings and participants are illustrative; the local admin preview does not grant shared administration rights.
 
 ## Development
 
@@ -24,7 +24,7 @@ Working local flows:
 npm install
 npm run dev
 npm run build
-node --test tests/store.test.js
+node --test tests/*.test.js
 ```
 
 Production output goes to `dist`. Hash-based routes support direct links on static hosts without rewrite rules. Google Fonts supplies Manrope and DM Sans; system sans-serif remains the fallback.
@@ -48,9 +48,9 @@ The older page/components remain in the repository but are not used by the new A
 
 ## Supabase integration — in progress
 
-The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Signup, sign-in, and account profile saving have been verified with a real account. Signed-in Ideas uses Supabase for publishing, editing, and voting; live publishing/editing and vote persistence still need verification. Shared idea discussions and bookmarks are connected. Signed-in hackathon/opportunity pages now read shared listings, with publishing/editing/closing gated by server-verified admin access. Overview and activity still use local preview data; participation and applications are not connected yet. See `backend/SETUP.md` for checkpoints.
+The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Signup, sign-in, and account profile saving have been verified with a real account. Signed-in Ideas uses Supabase for publishing, editing, and voting; live voting and bookmark persistence have been verified; publishing/editing verification is tracked in the setup notes. Shared idea discussions and bookmarks are connected. Signed-in hackathon/opportunity pages now read shared listings, with publishing/editing/closing gated by server-verified admin access. Hackathon participation now supports joining, leaving, and reading member profiles. Live participation verification awaits the first real listing. Overview and activity still use local preview data; applications are not connected yet. See `backend/SETUP.md` for checkpoints.
 
-Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. They are not consumed by the current local workspace. Never use a service-role or secret key in browser code.
+Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. The authenticated features consume these values; local preview content remains separate. Never use a service-role or secret key in browser code.
 
 Before switching to shared data:
 1. Inspect the target project and its existing tables. Review `backend/schema.sql`; it creates prefixed `ms_` tables without dropping existing tables.
@@ -64,4 +64,4 @@ RLS design reference: https://supabase.com/docs/guides/database/postgres/row-lev
 
 ## Scope for later iterations
 
-Live account verification, shared data, protected administration, notifications, team formation, listing editing, and deployment verification remain to be completed. Campus event participation is separate from official event registration.
+Opportunity applications, listing bookmarks, shared overview/activity, notifications, team formation, and deployment verification remain to be completed. Campus event participation is separate from official event registration.
