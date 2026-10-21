@@ -2212,3 +2212,7 @@ form>.button {
 .shared-idea h2 { font-size:22px; margin:16px 0; overflow-wrap:anywhere; }
 .shared-idea-body { white-space:pre-wrap; overflow-wrap:anywhere; font-size:16px; line-height:1.7; margin-bottom:20px; }
 .shared-idea-footer { display:flex; justify-content:space-between; margin-top:20px; color:var(--muted); font-size:14px; }
+
+.shared-vote-controls { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:22px; font-size:14px; }
+.shared-vote-controls button[aria-pressed="true"] { background:var(--forest); color:white; }
+.shared-vote-controls button:disabled { opacity:.6; cursor:wait; }

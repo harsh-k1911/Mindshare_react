@@ -65,3 +65,11 @@ The editor waits for database confirmation before closing, preserves drafts on f
 Manual verification: sign in, open Ideas, publish a post, reload, edit it, and reload again. A second signed-in member should see it after refreshing, without an Edit button. Mock service tests cover validation, identity filtering, query ownership, and failure handling; live multi-account verification remains pending.
 
 Live signed-in check: the shared feed successfully loads its empty state. The author join was made explicit (`ms_ideas_author_id_fkey`) after the live API reported ambiguous profile relationships. The publish dialog opens and native required-field validation blocks empty posts. No test posts were created; publish/edit persistence and second-member visibility still need verification.
+
+## 7. Shared idea voting — 21 October 2026
+
+Shared ideas now support upvotes, downvotes, switching direction, and removing a vote by pressing the selected direction again. Writes use the signed-in user ID and the existing `(idea_id,user_id)` unique key. The existing `ms_votes` RLS policy enforces ownership; no migration is required.
+
+The feed loads votes in ordered pages for its loaded idea IDs, so the standard response row limit does not truncate totals. Totals are calculated as upvotes minus downvotes. Responses from obsolete loads are ignored. Voting is locked during writes and reloads; both successful and failed writes trigger a fresh read, since a failed response can still correspond to a committed database write. Refresh ideas also refreshes voting data. This is refresh-based, not realtime.
+
+Automated verification: 32 tests pass, including vote ownership filters, insert/update conflict keys, removal, pagination, signed-out rejection, and server errors. Changed JavaScript passes lint and the production build passes. Live vote persistence still requires a published shared idea; the live feed was empty when checked.
