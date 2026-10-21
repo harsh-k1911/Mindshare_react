@@ -73,3 +73,9 @@ Shared ideas now support upvotes, downvotes, switching direction, and removing a
 The feed loads votes in ordered pages for its loaded idea IDs, so the standard response row limit does not truncate totals. Totals are calculated as upvotes minus downvotes. Responses from obsolete loads are ignored. Voting is locked during writes and reloads; both successful and failed writes trigger a fresh read, since a failed response can still correspond to a committed database write. Refresh ideas also refreshes voting data. This is refresh-based, not realtime.
 
 Automated verification: 32 tests pass, including vote ownership filters, insert/update conflict keys, removal, pagination, signed-out rejection, and server errors. Changed JavaScript passes lint and the production build passes. Live vote persistence still requires a published shared idea; the live feed was empty when checked.
+
+### Voting permission fix
+
+The first live upvote exposed `permission denied for table ms_votes`: merge-upsert attempts to update identity columns, while the schema intentionally permits updates only to `value`. The client now inserts with conflict-ignore, then updates only `value`, constrained by both identity columns. The update selects one row to detect missing/inaccessible records. Existing RLS and column permissions are unchanged. Both requests are repeatable; an interrupted operation still reloads server totals before retrying.
+
+Live checks verified upvote (1), switch to downvote (-1), and remove (0). All 33 tests, targeted lint, and the production build pass.

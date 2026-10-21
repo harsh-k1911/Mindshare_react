@@ -27,8 +27,8 @@ export default function useSharedVotes(ideaIds, userId) {
     const own = current.data[ideaId]?.own || 0;
     try {
       await writeVote(getSupabaseClient(),userId,ideaId,own === direction ? 0 : direction);
-    } catch {
-      setWriteError('We could not confirm your vote. Refreshing the totals before you try again.');
+    } catch (failure) {
+      setWriteError(`We could not confirm your vote. ${failure.message || 'Please try again.'} Refresh votes before trying again.`);
     } finally {
       // Reload after success or failure: a timed-out request may have reached the server.
       setRevision(value=>value+1); setBusy(false); lock.current=false;

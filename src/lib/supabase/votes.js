@@ -23,9 +23,18 @@ export async function fetchVotes(client, ideaIds, userId) {
 export async function writeVote(client, userId, ideaId, value) {
   if (!userId || !ideaId) throw new Error('Sign in and select an idea before voting.');
   if (![0,1,-1].includes(value)) throw new Error('Invalid vote.');
-  const table = client.from('ms_votes');
-  const query = value === 0 ? table.delete().eq('idea_id',ideaId).eq('user_id',userId)
-    : table.upsert({idea_id:ideaId,user_id:userId,value},{onConflict:'idea_id,user_id'});
-  const {error} = await query;
+  if (value === 0) {
+    const {error} = await client.from('ms_votes').delete().eq('idea_id',ideaId).eq('user_id',userId);
+    if (error) throw error;
+    return;
+  }
+  // DO NOTHING on conflict avoids requesting UPDATE permission on identity columns.
+  const {error:insertError} = await client.from('ms_votes').upsert(
+    {idea_id:ideaId,user_id:userId,value},
+    {onConflict:'idea_id,user_id',ignoreDuplicates:true}
+  );
+  if (insertError) throw insertError;
+  const {error} = await client.from('ms_votes').update({value})
+    .eq('idea_id',ideaId).eq('user_id',userId).select('value').single();
   if (error) throw error;
 }
