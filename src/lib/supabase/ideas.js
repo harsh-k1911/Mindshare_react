@@ -1,4 +1,4 @@
-const columns = 'id,author_id,title,description,tags,stage,created_at,author:ms_profiles!ms_ideas_author_id_fkey(name)';
+export const ideaColumns = 'id,author_id,title,description,tags,stage,created_at,author:ms_profiles!ms_ideas_author_id_fkey(name)';
 export function ideaFields(values) {
   const title = String(values.title || '').trim();
   const description = String(values.description || '').trim();
@@ -11,7 +11,7 @@ export function ideaFields(values) {
   return {title, description, tags, stage};
 }
 export async function fetchIdeas(client) {
-  const {data,error} = await client.from('ms_ideas').select(columns).order('created_at',{ascending:false}).limit(100);
+  const {data,error} = await client.from('ms_ideas').select(ideaColumns).order('created_at',{ascending:false}).limit(100);
   if (error) throw error;
   return data;
 }
@@ -20,7 +20,13 @@ export async function publishIdea(client,userId,values,ideaId) {
   const fields = ideaFields(values);
   const table = client.from('ms_ideas');
   const query = ideaId ? table.update(fields).eq('id',ideaId).eq('author_id',userId) : table.insert({...fields,author_id:userId});
-  const {data,error} = await query.select(columns).single();
+  const {data,error} = await query.select(ideaColumns).single();
   if (error) throw error;
   return data;
+}
+
+export async function fetchIdea(client,id) {
+  const {data,error}=await client.from('ms_ideas').select(ideaColumns).eq('id',id).maybeSingle();
+  if(error) throw error;
+  return data ? [data] : [];
 }

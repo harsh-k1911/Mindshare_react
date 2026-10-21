@@ -87,3 +87,13 @@ Shared ideas now open a discussion on demand. Comments load from `ms_comments` w
 Posting uses a draft UUID and waits for a confirmed database response. Retrying an unchanged draft after an uncertain response retrieves an existing record scoped to its ID, idea, and author; editing the draft creates a new UUID. Posting disables duplicate submission and retains text on failure. Collapsing the discussion preserves its draft until navigation/unmount. Refresh comments reads newer content; realtime delivery and comment editing/deletion are not included in this step.
 
 Verification: 39 tests, targeted lint and production build pass. Live comment loading and the empty discussion form are checked separately; posting/reply persistence and multi-account behavior require user verification.
+
+## 9. Private shared-idea bookmarks — 21 October 2026
+
+Signed-in members can save/unsave shared ideas and access them through Saved. Reads are scoped to the session user and use the existing private bookmark RLS policy. Conflict-ignore inserts avoid duplicate bookmarks and do not request updates to protected identity columns. Removal filters both user and idea IDs. Failed writes require refreshing before retrying.
+
+The Saved page joins bookmarked ideas directly, independently of the newest-100 feed, with ordered pagination. Direct idea routes now fetch their ID explicitly so older saved posts remain accessible. Signed-in Saved shows live idea bookmarks only; local preview bookmarks remain in browser storage, and listing bookmarks await listing integration. The preview bookmark count is hidden for signed-in members to avoid showing an unrelated number.
+
+Automated verification: 45 tests, targeted lint, and production build pass. Tests cover owner filters, duplicate-safe writes, removal scope, pagination, explicit joins, error handling, and direct retrieval of older posts.
+
+Live verification passed: saved Hacktoberfest, opened Saved, reloaded and confirmed persistence, then unsaved it and confirmed the empty collection. The original unsaved state was restored. No posts, votes, or comments were changed during this check.
