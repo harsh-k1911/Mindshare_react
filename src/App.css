@@ -2216,3 +2216,13 @@ form>.button {
 .shared-vote-controls { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:22px; font-size:14px; }
 .shared-vote-controls button[aria-pressed="true"] { background:var(--forest); color:white; }
 .shared-vote-controls button:disabled { opacity:.6; cursor:wait; }
+
+.shared-comments { border-top:1px solid var(--line); margin-top:20px; padding-top:16px; }
+.shared-discussion { margin-top:20px; }
+.shared-discussion h3 { font-size:18px; }
+.shared-discussion form { display:grid; gap:12px; margin-top:20px; }
+.shared-discussion textarea { width:100%; padding:12px; font:inherit; font-size:16px; resize:vertical; }
+.shared-comment { padding:16px 0; border-bottom:1px solid var(--line); }
+.shared-comment time { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
+.shared-comment p { white-space:pre-wrap; overflow-wrap:anywhere; font-size:15px; line-height:1.7; margin:10px 0; }
+.shared-reply { border-left:2px solid var(--line); padding-left:16px; margin:16px 0 0 10px; }

@@ -79,3 +79,11 @@ Automated verification: 32 tests pass, including vote ownership filters, insert/
 The first live upvote exposed `permission denied for table ms_votes`: merge-upsert attempts to update identity columns, while the schema intentionally permits updates only to `value`. The client now inserts with conflict-ignore, then updates only `value`, constrained by both identity columns. The update selects one row to detect missing/inaccessible records. Existing RLS and column permissions are unchanged. Both requests are repeatable; an interrupted operation still reloads server totals before retrying.
 
 Live checks verified upvote (1), switch to downvote (-1), and remove (0). All 33 tests, targeted lint, and the production build pass.
+
+## 8. Shared comments and replies — 21 October 2026
+
+Shared ideas now open a discussion on demand. Comments load from `ms_comments` with an explicit author-profile foreign key and ordered pagination. Replies use the existing composite parent/idea relationship and depth trigger; no migration is required. The interface only offers replies to top-level comments.
+
+Posting uses a draft UUID and waits for a confirmed database response. Retrying an unchanged draft after an uncertain response retrieves an existing record scoped to its ID, idea, and author; editing the draft creates a new UUID. Posting disables duplicate submission and retains text on failure. Collapsing the discussion preserves its draft until navigation/unmount. Refresh comments reads newer content; realtime delivery and comment editing/deletion are not included in this step.
+
+Verification: 39 tests, targeted lint and production build pass. Live comment loading and the empty discussion form are checked separately; posting/reply persistence and multi-account behavior require user verification.
