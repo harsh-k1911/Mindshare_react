@@ -2226,3 +2226,15 @@ form>.button {
 .shared-comment time { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
 .shared-comment p { white-space:pre-wrap; overflow-wrap:anywhere; font-size:15px; line-height:1.7; margin:10px 0; }
 .shared-reply { border-left:2px solid var(--line); padding-left:16px; margin:16px 0 0 10px; }
+
+.shared-listing { padding:24px; min-width:0; }
+.shared-listing h2 { font-size:22px; margin:16px 0; overflow-wrap:anywhere; }
+.shared-listing-body { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.7; font-size:16px; }
+.shared-listing dl { display:grid; grid-template-columns:110px minmax(0,1fr); gap:10px; font-size:14px; margin:20px 0; }
+.shared-listing dt { color:var(--muted); }.shared-listing dd { margin:0; overflow-wrap:anywhere; white-space:pre-wrap; }
+.shared-listing>.button,.shared-listing>.row-actions { margin-top:20px; }
+.shared-listing .row-actions { flex-wrap:wrap; }
+.shared-listing-form { display:grid; gap:18px; margin-top:20px; }
+.shared-listing-form fieldset { border:0; padding:0; min-width:0; display:grid; gap:16px; }
+.shared-listing-form label { display:grid; gap:8px; font-size:15px; }
+.shared-listing-form textarea { width:100%; resize:vertical; }

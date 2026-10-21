@@ -48,7 +48,7 @@ The older page/components remain in the repository but are not used by the new A
 
 ## Supabase integration — in progress
 
-The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Signup, sign-in, and account profile saving have been verified with a real account. Signed-in Ideas uses Supabase for publishing, editing, and voting; live publishing/editing and vote persistence still need verification. Other community sections continue to use local preview data. See `backend/SETUP.md` for checkpoints.
+The official Supabase client and public configuration validation are prepared in `src/lib/supabase/`. Signup, sign-in, and account profile saving have been verified with a real account. Signed-in Ideas uses Supabase for publishing, editing, and voting; live publishing/editing and vote persistence still need verification. Shared idea discussions and bookmarks are connected. Signed-in hackathon/opportunity pages now read shared listings, with publishing/editing/closing gated by server-verified admin access. Overview and activity still use local preview data; participation and applications are not connected yet. See `backend/SETUP.md` for checkpoints.
 
 Public connection values can be kept in ignored `.env.local` using `.env.example` as a guide. They are not consumed by the current local workspace. Never use a service-role or secret key in browser code.
 

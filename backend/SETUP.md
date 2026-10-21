@@ -97,3 +97,15 @@ The Saved page joins bookmarked ideas directly, independently of the newest-100 
 Automated verification: 45 tests, targeted lint, and production build pass. Tests cover owner filters, duplicate-safe writes, removal scope, pagination, explicit joins, error handling, and direct retrieval of older posts.
 
 Live verification passed: saved Hacktoberfest, opened Saved, reloaded and confirmed persistence, then unsaved it and confirmed the empty collection. The original unsaved state was restored. No posts, votes, or comments were changed during this check.
+
+## 10. Shared listings and protected administration — 22 October 2026
+
+Signed-in Hackathons and Opportunities now read `ms_listings`. Manage listings uses `ms_is_admin()` to show publishing controls only after the server confirms the role; non-admin accounts see an access-required screen. Existing database RLS independently enforces admin-only writes. The signed-out local admin preview remains explicitly a browser-only preview.
+
+Admins can create, edit, close, and reopen both listing kinds. Validated date ordering, field limits, HTTPS registration URLs, and opportunity openings are checked before submission. Edits whitelist mutable fields and never change listing kind/creator. Create retries use a stable draft UUID. Error messages retain drafts and require refreshed state after an uncertain status change. All listing reads use ordered pagination.
+
+The user explicitly approved their existing verified account as the first administrator on 22 October. The matching confirmed Auth account and profile were checked before adding its ID to `ms_admins`; Supabase returned `admin_granted=true`. No admin grant is included in the application or automatically applied by source files. The app showed access denied before the grant.
+
+Verification: 52 automated tests, targeted lint, and production build pass. Live creation/edit/close/reopen persistence still needs user verification with real listing content. Participation, applications, listing bookmarks, and overview/activity integration are the following steps.
+
+Live role verification completed: the same signed-in account changed from the access-required screen to Create listing after the approved grant and permission refresh. Both event and opportunity forms open with their appropriate fields; empty submission is blocked. The development server was restarted for verification. No real listings were published during UI checks.
